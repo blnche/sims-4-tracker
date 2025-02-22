@@ -5,13 +5,15 @@ export default function AccountLayout({
   }: Readonly<{
     children: React.ReactNode;
   }>) {
+    
+
     return (
         <>
-        <header className="flex flex-row justify-between mb-[3.125rem]">
+        <header className="p-[20px] flex flex-row justify-between mb-[3.125rem]">
             <h1>Sims 4 Tracker</h1>
             <AccountNav />
         </header>
-        <main>
+        <main className="relative">
             {children}
         </main>
         </>

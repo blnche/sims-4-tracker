@@ -17,12 +17,12 @@
   --foreground: #171717;
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
 
 html {
   box-sizing: border-box;
@@ -34,7 +34,6 @@ body {
   /* background: var(--background); */
   background: linear-gradient(#FBEDFA, #E0EBC9);
   font-family: 'Bolton', Arial, Helvetica, sans-serif;
-  padding: 1.25rem;
 }
 
 h2, h3 {
