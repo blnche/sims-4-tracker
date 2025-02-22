@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Bolton';
+  src: url('/public/fonts/Bolton.ttf');
+}
+
+@font-face {
+  font-family: 'BoltonBold';
+  src: url('/public/fonts/BoltonBold.ttf');
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -14,8 +24,23 @@
   }
 }
 
+html {
+  box-sizing: border-box;
+  min-height: 100%;
+}
+
 body {
   color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  /* background: var(--background); */
+  background: linear-gradient(#FBEDFA, #E0EBC9);
+  font-family: 'Bolton', Arial, Helvetica, sans-serif;
+  padding: 1.25rem;
+}
+
+h2, h3 {
+  font-family: 'BoltonBold', Arial, Helvetica, sans-serif;
+}
+
+* {
+  border-color: #0a0a0a;
 }
