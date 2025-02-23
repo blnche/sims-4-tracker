@@ -6,20 +6,28 @@ import EventModal from "./EventModal";
 
 export default function EventsCards () {
 
+    // this function should take arguments : household id and cycle id
+
     //function that gets event for current household get events where sim.household_id = currentHousehold.id
     //filter by events.type : new array events
     //map events in each event type in return
 
-    //each event card has a button to open pop up, each pop up is different
+    // new button needs to open modal and pass argument : isOpen, onClose, eventType, cycle, household id
+
+    
 
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [eventType, setEventType] = useState()
 
-    const handleOpenModal = () => {setIsModalOpen(true)}
+    const handleOpenModal = (type : string) => {
+        setIsModalOpen(true)
+        setEventType(type)
+    }
     const handleCloseModal = () => {setIsModalOpen(false)}
 
     return (
         <div className="relative flex flex-wrap gap-[60px] justify-center py-[40px] px-[20px] mt-[55px]">
-            <EventModal isOpen={isModalOpen} onClose={handleCloseModal}/>
+            <EventModal isOpen={isModalOpen} onClose={handleCloseModal} eventType={eventType}/>
             <div className="flex flex-col items-center bg-white relative w-[286px] px-[10px] pb-[20px] pt-[40px] border-[1px] rounded-[16px] space-y-[10px]">
                 <div className="bg-white absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-[3px] rounded-[16px] p-[6px]">
                     <div className="border-[1px] rounded-[14px] px-[20px] py-[10px] w-full">
@@ -66,7 +74,7 @@ export default function EventsCards () {
                     </div>
                 </div>
                 <button
-                onClick={handleOpenModal}
+                onClick={() => handleOpenModal('death')}
                     className="w-fit border-[2px] rounded-[14px] px-[25px] py-[10px]"
                 >
                     New

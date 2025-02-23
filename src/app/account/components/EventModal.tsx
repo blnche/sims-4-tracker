@@ -6,10 +6,17 @@ import React, { useEffect } from "react";
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
+    eventType: string
 }
 
-export default function EventModal({ isOpen, onClose } : ModalProps) {
+export default function EventModal({ isOpen, onClose, eventType } : ModalProps) {
     if(!isOpen) return null
+    console.log(eventType)
+
+    // this function needs arguments : isopen, onclose, eventype, cycle, household id
+
+    //each event card has a button to open pop up, each pop up is different in content but design is the same : title design,close button, save button, only the sim selectors varies. 
+    //button could be a save function that pass arguments non mandatory 
 
     useEffect(() => {
         if(typeof window !== 'undefined') {
@@ -25,6 +32,13 @@ export default function EventModal({ isOpen, onClose } : ModalProps) {
             }
         }
     }, [isOpen])
+
+
+    const handleSave = (type : string, sim1 : string, sim2 : string, sim3 : string ) => {
+        //find sim1, sim2, sim3 in database
+        //marriage, engagement, baby attempts, pregnancies, birth : both sims are not by default from same household. we could have a search for sim2 selector wher you type name of sim and you have suggestions.
+        //add in database new event with event type, cycle id, sim1 id, sim2 id, sim3 id
+    }
 
     return (
         <div className="z-[100] fixed inset-0 flex justify-center items-center bg-black/50">
