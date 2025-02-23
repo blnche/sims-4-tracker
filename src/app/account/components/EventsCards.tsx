@@ -1,12 +1,23 @@
 'use client'
+
 import Image from "next/image";
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import EventModal from "./EventModal";
+import { createClient } from '../../../../utils/supabase/client'
 
 
-export default function EventsCards () {
+interface EventCardProps {
+    household: object;
+    cycle: object
+}
 
-    // this function should take arguments : household id and cycle id
+export default function EventsCards ({ household, cycle } : EventCardProps) {
+
+    console.log(household)
+    console.log(cycle)
+
+    const supabase = createClient()
+
 
     //function that gets event for current household get events where sim.household_id = currentHousehold.id
     //filter by events.type : new array events
@@ -14,7 +25,41 @@ export default function EventsCards () {
 
     // new button needs to open modal and pass argument : isOpen, onClose, eventType, cycle, household id
 
-    
+    useEffect(() => {
+        if(!household || !cycle) return
+
+        const fetchEvents = async () => {
+            const { data : sims, error : simsError } = await supabase
+                .from('sims')
+                .select('*')
+                .eq('household_id', household.id)
+
+            if(simsError) {
+                console.error('Error fetchings Sims data:', simsError)
+                return
+            }
+
+            console.log(sims)
+
+            const simsIds = sims.map((sim) => sim.id)
+
+            const { data : events, error : eventsError } = await supabase
+                .from('events')
+                .select('*')
+                .eq('cycle_id', cycle.id)
+                // .or(`sim1.in.(${simsIds.join(',')}), sim2.in.(${simsIds.join(',')}), sim3.in.(${simsIds.join(',')})`)
+                .or(`sim_1_id.in.(${simsIds.join(',')})`)
+
+            if(eventsError) {
+                console.log('Error fetching events:', eventsError)
+            } else {
+                console.log(events)
+            }
+        }
+
+        fetchEvents()
+
+    }, [household])
 
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [eventType, setEventType] = useState()

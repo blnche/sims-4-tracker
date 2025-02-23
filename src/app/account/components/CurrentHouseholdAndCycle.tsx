@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from 'react'
 import { createClient } from '../../../../utils/supabase/client'
+import EventsCards from './EventsCards'
 
 export default function CurrentHouseholdAndCycle ({ households }) {
 
     const supabase = createClient()
 
     console.log(households)
-    const [selectedHousehold, setSelectedHousehold] = useState(households[0]?.id || null)
+    const [selectedHousehold, setSelectedHousehold] = useState('Choose Household')
     const [currentCycle, setCurrentCycle] = useState(null)
     const [householdData, setHouseholdData] = useState(null)
     const [currentYear, setCurrentYear] = useState(null)
@@ -53,16 +54,17 @@ export default function CurrentHouseholdAndCycle ({ households }) {
     // console.log(selectedHousehold)
     // console.log(householdData)
 
+    // function handleformsubmitted that adds sims to hosueholds and in database and updates the householdData (?)
+
     return (
         <div className='relative flex flex-col items-center'>
 
             {!currentCycle && (
                 <select 
-                    name="Choose household" 
-                    id=""
                     value={selectedHousehold}
                     onChange={(e) => setSelectedHousehold(e.target.value)}
                 >
+                    <option value='Choose Household'>Choose Household</option>
                     {households.map((household) => (
                         <option key={household.id} value={household.id}>{household.name}</option>
                     ))}
@@ -77,6 +79,13 @@ export default function CurrentHouseholdAndCycle ({ households }) {
                         <p>Sim Day {currentCycle.id}</p>
                     </div>
                     <button className='absolute right-[1%] sm:right-[5%] top-1/2 w-fit border-[2px] rounded-[14px] px-[20px] py-[10px] bg-white'>Day Done</button>
+                    <EventsCards household={householdData} cycle={currentCycle}/>
+                </>
+            )}
+
+            {selectedHousehold && householdData && householdData.days_played === 0 && (
+                <>{/*display sims from that household when they are created */}
+                <p>form add sims to household</p>
                 </>
             )}
         </div>
