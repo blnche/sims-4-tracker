@@ -6,6 +6,10 @@ import EventModal from "./EventModal";
 import EventsCards from "./EventsCards";
 import { createClient } from '../../../../utils/supabase/client'
 
+interface EventItem {
+    id: number;
+    name: string;
+}
 
 interface EventCardProps {
     household: object;
@@ -18,6 +22,9 @@ export default function Events ({ household, cycle } : EventCardProps) {
     console.log(cycle)
 
     const supabase = createClient()
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [eventType, setEventType] = useState(null)
+    const [events, setEvents] = useState<EventItem[]>([])
 
     //needs a function that checks if they are sims waiting to move into that household
     //transfers table if transfer.moving_in_household_id === household.id AND transer.days_played === household.days_played
@@ -56,7 +63,10 @@ export default function Events ({ household, cycle } : EventCardProps) {
             if(eventsError) {
                 console.log('Error fetching events:', eventsError)
             } else {
-                console.log(events)
+                // console.log(events)
+            }
+            if(events) {
+                setEvents(events)
             }
         }
 
@@ -64,8 +74,6 @@ export default function Events ({ household, cycle } : EventCardProps) {
 
     }, [household])
 
-    const [isModalOpen, setIsModalOpen] = useState(false)
-    const [eventType, setEventType] = useState()
 
     const handleOpenModal = (type : string) => {
         setIsModalOpen(true)
@@ -76,7 +84,7 @@ export default function Events ({ household, cycle } : EventCardProps) {
     return (
         <div className="relative flex flex-wrap gap-[60px] justify-center py-[40px] px-[20px] mt-[55px]">
             <EventModal isOpen={isModalOpen} onClose={handleCloseModal} eventType={eventType}/>
-            <EventsCards onOpenModal={handleOpenModal}/>
+            <EventsCards onOpenModal={handleOpenModal} events={events}/>
         </div>
     )
 }

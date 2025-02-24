@@ -2,66 +2,123 @@
 
 import Image from "next/image";
 import { useEffect, useState } from 'react'
+
+interface EventItem {
+    id: number;
+    name: string;
+}
 interface ModalProps {
     onOpenModal: (eventType : string) => void;
+    events: EventItem[]
 }
 
-export default function EventsCards ({ onOpenModal } : ModalProps) {
-    
+export default function EventsCards ({ onOpenModal, events } : ModalProps) {
+
+    console.log(events)
+
+    const eventTypes = ['death', 'birth', 'marriage']
+
+    //figure out logic here but mabe move back this code to Events if using EventCard Component
+    //filter events according to eventTypes
+    //if event in eventypes is not in events received then display empty card
+
+    //have another component eventCard. props : name, onOpenModal, events
+    //eventCard component can render 
+    //title : name; 
+    //have a working button : onOpenModal(name); 
+    //events : array of all eventType events (eg all deaths fro that cycle) and display them with the corresponding sims attached to each event (need sim name and lastname)
+    //for each event i call sims table to find sim.id === event.sim_1_id, and/or sim.id === sim_2_id and/or sim.id === event.sim_3_id
+
+    // const { data : events, error : eventsError } = await supabase
+    // .from('events')
+    // .select('*')
+    // .eq('cycle_id', cycle.id)
+    // // .or(`sim1.in.(${simsIds.join(',')}), sim2.in.(${simsIds.join(',')}), sim3.in.(${simsIds.join(',')})`)
+    // .or(`sim_1_id.in.(${simsIds.join(',')})`)
+
+    // const fetchSimsForEvents = async () => {
+    //     const simsData = await Promise.all(
+
+    //         events.map(async (event) => {
+        
+    //             const { data : sims, error : simsError } = await supabase
+    //                 .from('sims')
+    //                 .select('*')
+    //                 .or(`id.eq.${event.sim_1_id}, id.eq.${event.sim_2_id}, id.eq.${event.sim_3_id}`)
+
+    //             if(simsError) {
+    //                 console.error('Error fetching sims for events:', simsError)
+    //                 return { eventId: event.id, sims: []}
+    //             }
+
+    //             return { eventId: event.id, sims}
+    //         })
+    //     )
+    // }
+
+
     return (
         <>
             <div className="flex flex-col items-center bg-white relative w-[286px] px-[10px] pb-[20px] pt-[40px] border-[1px] rounded-[16px] space-y-[10px]">
-                    <div className="bg-white absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-[3px] rounded-[16px] p-[6px]">
-                        <div className="border-[1px] rounded-[14px] px-[20px] py-[10px] w-full">
-                            <h3 className="text-center">Birthday Roll</h3>
-                        </div>
+                <div className="bg-white absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-[3px] rounded-[16px] p-[6px]">
+                    <div className="border-[1px] rounded-[14px] px-[20px] py-[10px] w-full">
+                        <h3 className="text-center">Birthday Roll</h3>
                     </div>
-                    <div className="w-full h-full p-[10px] space-y-[20px]">
-                        <div className="flex space-x-[5px]">
-                            <Image 
-                                
-                                src="/images/events_icons/CakeBirthday 1.png"
-                                alt="Birthday Cake logo"
-                                width={24}
-                                height={24}
-                                priority
-                            />
-                            <p>Sims 1</p>
-                        </div>
-                    </div>
-                    <button
-                        className="w-fit border-[2px] rounded-[14px] px-[25px] py-[10px]"
-                    >
-                        New
-                    </button>
                 </div>
+                <div className="w-full h-full p-[10px] space-y-[20px]">
+                    <div className="flex space-x-[5px]">
+                        <Image 
+                            
+                            src="/images/events_icons/CakeBirthday 1.png"
+                            alt="Birthday Cake logo"
+                            width={24}
+                            height={24}
+                            priority
+                        />
+                        <p>Sims 1</p>
+                    </div>
+                </div>
+                <button
+                    className="w-fit border-[2px] rounded-[14px] px-[25px] py-[10px]"
+                >
+                    New
+                </button>
+            </div>
 
-                <div className="flex flex-col items-center bg-white relative w-[286px] px-[10px] pb-[20px] pt-[40px] border-[1px] rounded-[16px] space-y-[10px]">
-                    <div className="bg-white absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-[3px] rounded-[16px] p-[6px]">
-                        <div className="border-[1px] rounded-[14px] px-[20px] py-[10px] w-full">
-                            <h3 className="text-center">Deaths</h3>
-                        </div>
+            {/** this is one event category */}
+            {/** multiple categories */}
+            <div className="flex flex-col items-center bg-white relative w-[286px] px-[10px] pb-[20px] pt-[40px] border-[1px] rounded-[16px] space-y-[10px]">
+                <div className="bg-white absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-[3px] rounded-[16px] p-[6px]">
+                    <div className="border-[1px] rounded-[14px] px-[20px] py-[10px] w-full">
+                        {/** the title changes between categories */}
+                        <h3 className="text-center">Deaths</h3>
                     </div>
-                    <div className="w-full h-full p-[10px] space-y-[20px]">
-                        <div className="flex space-x-[5px]">
-                            <Image 
-                                
-                                src="/images/events_icons/Tombstone 1.png"
-                                alt="Birthday Cake logo"
-                                width={24}
-                                height={24}
-                                priority
-                            />
-                            <p>Sims 1</p>
-                        </div>
-                    </div>
-                    <button
-                    onClick={() => onOpenModal('death')}
-                        className="w-fit border-[2px] rounded-[14px] px-[25px] py-[10px]"
-                    >
-                        New
-                    </button>
                 </div>
+                <div className="w-full h-full p-[10px] space-y-[20px]">
+                    {/** this is one event line : picture (src + alt) + sims for that event */}
+                    {/** mutlitple events in category */}
+                    <div className="flex space-x-[5px]">
+                        <Image 
+                            
+                            src="/images/events_icons/Tombstone 1.png"
+                            alt="Birthday Cake logo"
+                            width={24}
+                            height={24}
+                            priority
+                        />
+                        <p>Sims 1</p>
+                    </div>
+
+                </div>
+                {/** button takes only one argument : type of event, maybe should take a second one : cycle.id */}
+                {/** only one button*/}
+                <button
+                    onClick={() => onOpenModal('death')}
+                    className="w-fit border-[2px] rounded-[14px] px-[25px] py-[10px]"
+                >
+                    New
+                </button>
+            </div>
 
                 <div className="flex flex-col items-center bg-white relative w-[286px] px-[10px] pb-[20px] pt-[40px] border-[1px] rounded-[16px] space-y-[10px]">
                     <div className="bg-white absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-[3px] rounded-[16px] p-[6px]">

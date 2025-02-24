@@ -6,7 +6,7 @@ import React, { useEffect } from "react";
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
-    eventType: string
+    eventType: string | null
 }
 
 export default function EventModal({ isOpen, onClose, eventType } : ModalProps) {
