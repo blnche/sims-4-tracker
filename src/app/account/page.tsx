@@ -1,6 +1,6 @@
 import AccountForm from './account-form'
 import { createClient } from '../../../utils/supabase/server'
-import EventsCards from './components/EventsCards'
+import EventsCards from './components/Events'
 import CurrentHouseholdAndCycle from './components/CurrentHouseholdAndCycle'
 
 export default async function Account() {

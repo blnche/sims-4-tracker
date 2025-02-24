@@ -2,333 +2,270 @@
 
 import Image from "next/image";
 import { useEffect, useState } from 'react'
-import EventModal from "./EventModal";
-import { createClient } from '../../../../utils/supabase/client'
-
-
-interface EventCardProps {
-    household: object;
-    cycle: object
+interface ModalProps {
+    onOpenModal: (eventType : string) => void;
 }
 
-export default function EventsCards ({ household, cycle } : EventCardProps) {
-
-    console.log(household)
-    console.log(cycle)
-
-    const supabase = createClient()
-
-
-    //function that gets event for current household get events where sim.household_id = currentHousehold.id
-    //filter by events.type : new array events
-    //map events in each event type in return
-
-    // new button needs to open modal and pass argument : isOpen, onClose, eventType, cycle, household id
-
-    useEffect(() => {
-        if(!household || !cycle) return
-
-        const fetchEvents = async () => {
-            const { data : sims, error : simsError } = await supabase
-                .from('sims')
-                .select('*')
-                .eq('household_id', household.id)
-
-            if(simsError) {
-                console.error('Error fetchings Sims data:', simsError)
-                return
-            }
-
-            console.log(sims)
-
-            const simsIds = sims.map((sim) => sim.id)
-
-            const { data : events, error : eventsError } = await supabase
-                .from('events')
-                .select('*')
-                .eq('cycle_id', cycle.id)
-                // .or(`sim1.in.(${simsIds.join(',')}), sim2.in.(${simsIds.join(',')}), sim3.in.(${simsIds.join(',')})`)
-                .or(`sim_1_id.in.(${simsIds.join(',')})`)
-
-            if(eventsError) {
-                console.log('Error fetching events:', eventsError)
-            } else {
-                console.log(events)
-            }
-        }
-
-        fetchEvents()
-
-    }, [household])
-
-    const [isModalOpen, setIsModalOpen] = useState(false)
-    const [eventType, setEventType] = useState()
-
-    const handleOpenModal = (type : string) => {
-        setIsModalOpen(true)
-        setEventType(type)
-    }
-    const handleCloseModal = () => {setIsModalOpen(false)}
-
+export default function EventsCards ({ onOpenModal } : ModalProps) {
+    
     return (
-        <div className="relative flex flex-wrap gap-[60px] justify-center py-[40px] px-[20px] mt-[55px]">
-            <EventModal isOpen={isModalOpen} onClose={handleCloseModal} eventType={eventType}/>
+        <>
             <div className="flex flex-col items-center bg-white relative w-[286px] px-[10px] pb-[20px] pt-[40px] border-[1px] rounded-[16px] space-y-[10px]">
-                <div className="bg-white absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-[3px] rounded-[16px] p-[6px]">
-                    <div className="border-[1px] rounded-[14px] px-[20px] py-[10px] w-full">
-                        <h3 className="text-center">Birthday Roll</h3>
+                    <div className="bg-white absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-[3px] rounded-[16px] p-[6px]">
+                        <div className="border-[1px] rounded-[14px] px-[20px] py-[10px] w-full">
+                            <h3 className="text-center">Birthday Roll</h3>
+                        </div>
                     </div>
-                </div>
-                <div className="w-full h-full p-[10px] space-y-[20px]">
-                    <div className="flex space-x-[5px]">
-                        <Image 
-                            
-                            src="/images/events_icons/CakeBirthday 1.png"
-                            alt="Birthday Cake logo"
-                            width={24}
-                            height={24}
-                            priority
-                        />
-                        <p>Sims 1</p>
+                    <div className="w-full h-full p-[10px] space-y-[20px]">
+                        <div className="flex space-x-[5px]">
+                            <Image 
+                                
+                                src="/images/events_icons/CakeBirthday 1.png"
+                                alt="Birthday Cake logo"
+                                width={24}
+                                height={24}
+                                priority
+                            />
+                            <p>Sims 1</p>
+                        </div>
                     </div>
+                    <button
+                        className="w-fit border-[2px] rounded-[14px] px-[25px] py-[10px]"
+                    >
+                        New
+                    </button>
                 </div>
-                <button
-                    className="w-fit border-[2px] rounded-[14px] px-[25px] py-[10px]"
-                >
-                    New
-                </button>
-            </div>
 
-            <div className="flex flex-col items-center bg-white relative w-[286px] px-[10px] pb-[20px] pt-[40px] border-[1px] rounded-[16px] space-y-[10px]">
-                <div className="bg-white absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-[3px] rounded-[16px] p-[6px]">
-                    <div className="border-[1px] rounded-[14px] px-[20px] py-[10px] w-full">
-                        <h3 className="text-center">Deaths</h3>
+                <div className="flex flex-col items-center bg-white relative w-[286px] px-[10px] pb-[20px] pt-[40px] border-[1px] rounded-[16px] space-y-[10px]">
+                    <div className="bg-white absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-[3px] rounded-[16px] p-[6px]">
+                        <div className="border-[1px] rounded-[14px] px-[20px] py-[10px] w-full">
+                            <h3 className="text-center">Deaths</h3>
+                        </div>
                     </div>
-                </div>
-                <div className="w-full h-full p-[10px] space-y-[20px]">
-                    <div className="flex space-x-[5px]">
-                        <Image 
-                            
-                            src="/images/events_icons/Tombstone 1.png"
-                            alt="Birthday Cake logo"
-                            width={24}
-                            height={24}
-                            priority
-                        />
-                        <p>Sims 1</p>
+                    <div className="w-full h-full p-[10px] space-y-[20px]">
+                        <div className="flex space-x-[5px]">
+                            <Image 
+                                
+                                src="/images/events_icons/Tombstone 1.png"
+                                alt="Birthday Cake logo"
+                                width={24}
+                                height={24}
+                                priority
+                            />
+                            <p>Sims 1</p>
+                        </div>
                     </div>
+                    <button
+                    onClick={() => onOpenModal('death')}
+                        className="w-fit border-[2px] rounded-[14px] px-[25px] py-[10px]"
+                    >
+                        New
+                    </button>
                 </div>
-                <button
-                onClick={() => handleOpenModal('death')}
-                    className="w-fit border-[2px] rounded-[14px] px-[25px] py-[10px]"
-                >
-                    New
-                </button>
-            </div>
 
-            <div className="flex flex-col items-center bg-white relative w-[286px] px-[10px] pb-[20px] pt-[40px] border-[1px] rounded-[16px] space-y-[10px]">
-                <div className="bg-white absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-[3px] rounded-[16px] p-[6px]">
-                    <div className="border-[1px] rounded-[14px] px-[20px] py-[10px] w-full">
-                        <h3 className="text-center">Births</h3>
+                <div className="flex flex-col items-center bg-white relative w-[286px] px-[10px] pb-[20px] pt-[40px] border-[1px] rounded-[16px] space-y-[10px]">
+                    <div className="bg-white absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-[3px] rounded-[16px] p-[6px]">
+                        <div className="border-[1px] rounded-[14px] px-[20px] py-[10px] w-full">
+                            <h3 className="text-center">Births</h3>
+                        </div>
                     </div>
-                </div>
-                <div className="w-full h-full p-[10px] space-y-[20px]">
-                    <div className="flex space-x-[5px]">
-                        <Image 
-                            
-                            src="/images/events_icons/BabyBottle 1.png"
-                            alt="Birthday Cake logo"
-                            width={24}
-                            height={24}
-                            priority
-                        />
-                        <p>Sims 1</p>
+                    <div className="w-full h-full p-[10px] space-y-[20px]">
+                        <div className="flex space-x-[5px]">
+                            <Image 
+                                
+                                src="/images/events_icons/BabyBottle 1.png"
+                                alt="Birthday Cake logo"
+                                width={24}
+                                height={24}
+                                priority
+                            />
+                            <p>Sims 1</p>
+                        </div>
                     </div>
+                    <button
+                        className="w-fit border-[2px] rounded-[14px] px-[25px] py-[10px]"
+                    >
+                        New
+                    </button>
                 </div>
-                <button
-                    className="w-fit border-[2px] rounded-[14px] px-[25px] py-[10px]"
-                >
-                    New
-                </button>
-            </div>
 
-            <div className="flex flex-col items-center bg-white relative w-[286px] px-[10px] pb-[20px] pt-[40px] border-[1px] rounded-[16px] space-y-[10px]">
-                <div className="bg-white absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-[3px] rounded-[16px] p-[6px]">
-                    <div className="border-[1px] rounded-[14px] px-[20px] py-[10px] w-full">
-                        <h3 className="text-center">Engagements</h3>
+                <div className="flex flex-col items-center bg-white relative w-[286px] px-[10px] pb-[20px] pt-[40px] border-[1px] rounded-[16px] space-y-[10px]">
+                    <div className="bg-white absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-[3px] rounded-[16px] p-[6px]">
+                        <div className="border-[1px] rounded-[14px] px-[20px] py-[10px] w-full">
+                            <h3 className="text-center">Engagements</h3>
+                        </div>
                     </div>
+                    <div className="w-full h-full p-[10px] space-y-[20px]">
+                        <div className="flex space-x-[5px]">
+                            <Image 
+                                
+                                src="/images/events_icons/WeddingRing 1.png"
+                                alt="Birthday Cake logo"
+                                width={24}
+                                height={24}
+                                priority
+                            />
+                            <p>Sims 1</p>
+                        </div>
+                        <div className="flex space-x-[5px]">
+                            <Image 
+                                
+                                src="/images/events_icons/WeddingRing 1.png"
+                                alt="Birthday Cake logo"
+                                width={24}
+                                height={24}
+                                priority
+                            />
+                            <p>Sims 1</p>
+                        </div>
+                    </div>
+                    <button
+                        className="w-fit border-[2px] rounded-[14px] px-[25px] py-[10px]"
+                    >
+                        New
+                    </button>
                 </div>
-                <div className="w-full h-full p-[10px] space-y-[20px]">
-                    <div className="flex space-x-[5px]">
-                        <Image 
-                            
-                            src="/images/events_icons/WeddingRing 1.png"
-                            alt="Birthday Cake logo"
-                            width={24}
-                            height={24}
-                            priority
-                        />
-                        <p>Sims 1</p>
-                    </div>
-                    <div className="flex space-x-[5px]">
-                        <Image 
-                            
-                            src="/images/events_icons/WeddingRing 1.png"
-                            alt="Birthday Cake logo"
-                            width={24}
-                            height={24}
-                            priority
-                        />
-                        <p>Sims 1</p>
-                    </div>
-                </div>
-                <button
-                    className="w-fit border-[2px] rounded-[14px] px-[25px] py-[10px]"
-                >
-                    New
-                </button>
-            </div>
 
-            <div className="flex flex-col items-center bg-white relative w-[286px] px-[10px] pb-[20px] pt-[40px] border-[1px] rounded-[16px] space-y-[10px]">
-                <div className="bg-white absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-[3px] rounded-[16px] p-[6px]">
-                    <div className="border-[1px] rounded-[14px] px-[20px] py-[10px] w-full">
-                        <h3 className="text-center">Marriages</h3>
+                <div className="flex flex-col items-center bg-white relative w-[286px] px-[10px] pb-[20px] pt-[40px] border-[1px] rounded-[16px] space-y-[10px]">
+                    <div className="bg-white absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-[3px] rounded-[16px] p-[6px]">
+                        <div className="border-[1px] rounded-[14px] px-[20px] py-[10px] w-full">
+                            <h3 className="text-center">Marriages</h3>
+                        </div>
                     </div>
-                </div>
-                <div className="w-full h-full p-[10px] space-y-[20px]">
-                    <div className="flex space-x-[5px]">
-                        <Image 
-                            
-                            src="/images/events_icons/icones-Sims-4-GP11-Wedding-stories-mariage-LuniverSims (38) 1.png"
-                            alt="Birthday Cake logo"
-                            width={24}
-                            height={24}
-                            priority
-                        />
-                        <p>Sims 1</p>
+                    <div className="w-full h-full p-[10px] space-y-[20px]">
+                        <div className="flex space-x-[5px]">
+                            <Image 
+                                
+                                src="/images/events_icons/icones-Sims-4-GP11-Wedding-stories-mariage-LuniverSims (38) 1.png"
+                                alt="Birthday Cake logo"
+                                width={24}
+                                height={24}
+                                priority
+                            />
+                            <p>Sims 1</p>
+                        </div>
                     </div>
+                    <button
+                        className="w-fit border-[2px] rounded-[14px] px-[25px] py-[10px]"
+                    >
+                        New
+                    </button>
                 </div>
-                <button
-                    className="w-fit border-[2px] rounded-[14px] px-[25px] py-[10px]"
-                >
-                    New
-                </button>
-            </div>
 
-            <div className="flex flex-col items-center bg-white relative w-[286px] px-[10px] pb-[20px] pt-[40px] border-[1px] rounded-[16px] space-y-[10px]">
-                <div className="bg-white absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-[3px] rounded-[16px] p-[6px]">
-                    <div className="border-[1px] rounded-[14px] px-[20px] py-[10px] w-full">
-                        <h3 className="text-center">Divorces</h3>
+                <div className="flex flex-col items-center bg-white relative w-[286px] px-[10px] pb-[20px] pt-[40px] border-[1px] rounded-[16px] space-y-[10px]">
+                    <div className="bg-white absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-[3px] rounded-[16px] p-[6px]">
+                        <div className="border-[1px] rounded-[14px] px-[20px] py-[10px] w-full">
+                            <h3 className="text-center">Divorces</h3>
+                        </div>
                     </div>
+                    <div className="w-full h-full p-[10px] space-y-[20px]">
+                        <div className="flex items-center space-x-[5px]">
+                            <Image 
+                                
+                                src="/images/events_icons/WeddingDivorce 1.png"
+                                alt="Birthday Cake logo"
+                                width={24}
+                                height={24}
+                                priority
+                            />
+                            <p>Rachel Lemail & Elizabeth-Denetia Delaroche</p>
+                        </div>
+                        <div className="flex items-center space-x-[5px]">
+                            <Image 
+                                
+                                src="/images/events_icons/WeddingDivorce 1.png"
+                                alt="Birthday Cake logo"
+                                width={24}
+                                height={24}
+                                priority
+                            />
+                            <p>Rachel Lemail & Elizabeth-Denetia Delaroche</p>
+                        </div>
+                    </div>
+                    <button
+                        className="w-fit border-[2px] rounded-[14px] px-[25px] py-[10px]"
+                    >
+                        New
+                    </button>
                 </div>
-                <div className="w-full h-full p-[10px] space-y-[20px]">
-                    <div className="flex items-center space-x-[5px]">
-                        <Image 
-                            
-                            src="/images/events_icons/WeddingDivorce 1.png"
-                            alt="Birthday Cake logo"
-                            width={24}
-                            height={24}
-                            priority
-                        />
-                        <p>Rachel Lemail & Elizabeth-Denetia Delaroche</p>
-                    </div>
-                    <div className="flex items-center space-x-[5px]">
-                        <Image 
-                            
-                            src="/images/events_icons/WeddingDivorce 1.png"
-                            alt="Birthday Cake logo"
-                            width={24}
-                            height={24}
-                            priority
-                        />
-                        <p>Rachel Lemail & Elizabeth-Denetia Delaroche</p>
-                    </div>
-                </div>
-                <button
-                    className="w-fit border-[2px] rounded-[14px] px-[25px] py-[10px]"
-                >
-                    New
-                </button>
-            </div>
 
-            <div className="flex flex-col items-center bg-white relative w-[286px] px-[10px] pb-[20px] pt-[40px] border-[1px] rounded-[16px] space-y-[10px]">
-                <div className="bg-white absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-[3px] rounded-[16px] p-[6px]">
-                    <div className="border-[1px] rounded-[14px] px-[20px] py-[10px] w-full">
-                        <h3 className="text-center">Baby Attempts</h3>
+                <div className="flex flex-col items-center bg-white relative w-[286px] px-[10px] pb-[20px] pt-[40px] border-[1px] rounded-[16px] space-y-[10px]">
+                    <div className="bg-white absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-[3px] rounded-[16px] p-[6px]">
+                        <div className="border-[1px] rounded-[14px] px-[20px] py-[10px] w-full">
+                            <h3 className="text-center">Baby Attempts</h3>
+                        </div>
                     </div>
-                </div>
-                <div className="w-full h-full p-[10px] space-y-[20px]">
-                    <div className="flex space-x-[5px]">
-                        <Image 
-                            
-                            src="/images/events_icons/HeartFire 1.png"
-                            alt="Birthday Cake logo"
-                            width={24}
-                            height={24}
-                            priority
-                        />
-                        <p>Sims 1 & Sim 2</p>
+                    <div className="w-full h-full p-[10px] space-y-[20px]">
+                        <div className="flex space-x-[5px]">
+                            <Image 
+                                
+                                src="/images/events_icons/HeartFire 1.png"
+                                alt="Birthday Cake logo"
+                                width={24}
+                                height={24}
+                                priority
+                            />
+                            <p>Sims 1 & Sim 2</p>
+                        </div>
                     </div>
+                    <button
+                        className="w-fit border-[2px] rounded-[14px] px-[25px] py-[10px]"
+                    >
+                        New
+                    </button>
                 </div>
-                <button
-                    className="w-fit border-[2px] rounded-[14px] px-[25px] py-[10px]"
-                >
-                    New
-                </button>
-            </div>
 
-            <div className="flex flex-col items-center bg-white relative w-[286px] px-[10px] pb-[20px] pt-[40px] border-[1px] rounded-[16px] space-y-[10px]">
-                <div className="bg-white absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-[3px] rounded-[16px] p-[6px]">
-                    <div className="border-[1px] rounded-[14px] px-[20px] py-[10px] w-full">
-                        <h3 className="text-center">Pregnancies</h3>
+                <div className="flex flex-col items-center bg-white relative w-[286px] px-[10px] pb-[20px] pt-[40px] border-[1px] rounded-[16px] space-y-[10px]">
+                    <div className="bg-white absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-[3px] rounded-[16px] p-[6px]">
+                        <div className="border-[1px] rounded-[14px] px-[20px] py-[10px] w-full">
+                            <h3 className="text-center">Pregnancies</h3>
+                        </div>
                     </div>
-                </div>
-                <div className="w-full h-full p-[10px] space-y-[20px]">
-                    <div className="flex space-x-[5px]">
-                        <Image 
-                            
-                            src="/images/events_icons/BabyNew 1.png"
-                            alt="Birthday Cake logo"
-                            width={24}
-                            height={24}
-                            priority
-                        />
-                        <p>Sims 1 & Sim 2</p>
+                    <div className="w-full h-full p-[10px] space-y-[20px]">
+                        <div className="flex space-x-[5px]">
+                            <Image 
+                                
+                                src="/images/events_icons/BabyNew 1.png"
+                                alt="Birthday Cake logo"
+                                width={24}
+                                height={24}
+                                priority
+                            />
+                            <p>Sims 1 & Sim 2</p>
+                        </div>
                     </div>
+                    <button
+                        className="w-fit border-[2px] rounded-[14px] px-[25px] py-[10px]"
+                    >
+                        New
+                    </button>
                 </div>
-                <button
-                    className="w-fit border-[2px] rounded-[14px] px-[25px] py-[10px]"
-                >
-                    New
-                </button>
-            </div>
 
-            <div className="flex flex-col items-center bg-white relative w-[286px] px-[10px] pb-[20px] pt-[40px] border-[1px] rounded-[16px] space-y-[10px]">
-                <div className="bg-white absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-[3px] rounded-[16px] p-[6px]">
-                    <div className="border-[1px] rounded-[14px] px-[20px] py-[10px] w-full">
-                        <h3 className="text-center">Coronations</h3>
+                <div className="flex flex-col items-center bg-white relative w-[286px] px-[10px] pb-[20px] pt-[40px] border-[1px] rounded-[16px] space-y-[10px]">
+                    <div className="bg-white absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-[3px] rounded-[16px] p-[6px]">
+                        <div className="border-[1px] rounded-[14px] px-[20px] py-[10px] w-full">
+                            <h3 className="text-center">Coronations</h3>
+                        </div>
                     </div>
-                </div>
-                <div className="w-full h-full p-[10px] space-y-[20px]">
-                    <div className="flex space-x-[5px]">
-                        <Image 
-                            
-                            src="/images/events_icons/Crown 1.png"
-                            alt="Birthday Cake logo"
-                            width={24}
-                            height={24}
-                            priority
-                        />
-                        <p>Sims 1</p>
+                    <div className="w-full h-full p-[10px] space-y-[20px]">
+                        <div className="flex space-x-[5px]">
+                            <Image 
+                                
+                                src="/images/events_icons/Crown 1.png"
+                                alt="Birthday Cake logo"
+                                width={24}
+                                height={24}
+                                priority
+                            />
+                            <p>Sims 1</p>
+                        </div>
                     </div>
+                    <button
+                        className="w-fit border-[2px] rounded-[14px] px-[25px] py-[10px]"
+                    >
+                        New
+                    </button>
                 </div>
-                <button
-                    className="w-fit border-[2px] rounded-[14px] px-[25px] py-[10px]"
-                >
-                    New
-                </button>
-            </div>
-        </div>
+            </>
     )
 }

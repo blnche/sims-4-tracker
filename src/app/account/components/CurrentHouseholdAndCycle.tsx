@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { createClient } from '../../../../utils/supabase/client'
-import EventsCards from './EventsCards'
+import EventsCards from './Events'
 
 export default function CurrentHouseholdAndCycle ({ households }) {
 
