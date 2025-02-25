@@ -22,7 +22,7 @@ export default function Events ({ household, cycle } : EventCardProps) {
     console.log(cycle)
 
     const supabase = createClient()
-    
+
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [eventType, setEventType] = useState(null)
     const [events, setEvents] = useState<EventItem[]>([])
@@ -80,7 +80,10 @@ export default function Events ({ household, cycle } : EventCardProps) {
         setIsModalOpen(true)
         setEventType(type)
     }
-    const handleCloseModal = () => {setIsModalOpen(false)}
+    const handleCloseModal = () => {
+        setIsModalOpen(false)
+        document.body.style.overflow = 'auto'
+    }
 
     return (
         <div className="relative flex flex-wrap gap-[60px] justify-center py-[40px] px-[20px] mt-[55px]">

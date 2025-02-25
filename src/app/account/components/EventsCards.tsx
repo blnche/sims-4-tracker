@@ -22,7 +22,7 @@ export default function EventsCards ({ onOpenModal, events } : ModalProps) {
 
     const supabase = createClient()
 
-    const eventTypes = ['Deaths', 'Births', 'Marriages', 'Coronations', 'Divorces', 'Engagements', 'Birthday Roll', 'Pregnancies', 'Baby Attempts']
+    const eventTypes = ['Death', 'Birth', 'Marriage', 'Coronation', 'Divorce', 'Engagement', 'Pregnancy', 'Baby Attempt']
 
     const [filteredEvents, setFilteredEvents] = useState([])
 
@@ -117,7 +117,7 @@ export default function EventsCards ({ onOpenModal, events } : ModalProps) {
                         {/* {Event title} */}
                         <div className="bg-white absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-[3px] rounded-[16px] p-[6px]">
                             <div className="border-[1px] rounded-[14px] px-[20px] py-[10px] w-full">
-                                <h3 className="text-center">{eventType}</h3>
+                                <h3 className="text-center">{eventType}s</h3>
                             </div>
                         </div>
                         {/* Events Section (empty if none) */}
