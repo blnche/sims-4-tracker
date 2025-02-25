@@ -53,7 +53,14 @@ export default function EventsCards ({ onOpenModal, events } : ModalProps) {
                 events.map(async (event) => {
                     console.log(event.type, event.sim_1_id)
 
-                    const validSimsIds = [event.sim_1_id, event.sim_2_id, event.sim_3_id].filter(id => id !== undefined && id !== null)
+                    let validSimsIds 
+                    
+                    if(event.type === 'birth') {
+
+                        validSimsIds = [event.sim_1_id].filter(id => id !== undefined && id !== null)
+                    } else {
+                        validSimsIds = [event.sim_1_id, event.sim_2_id, event.sim_3_id].filter(id => id !== undefined && id !== null)
+                    }
 
                     if(validSimsIds.length === 0) {
                         return { eventId: event.id, sims: []}

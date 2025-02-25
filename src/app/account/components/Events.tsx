@@ -73,7 +73,7 @@ export default function Events ({ household, cycle } : EventCardProps) {
 
         fetchEvents()
 
-    }, [household])
+    }, [household, cycle])
 
 
     const handleOpenModal = (type : string) => {

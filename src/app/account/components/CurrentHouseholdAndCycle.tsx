@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { createClient } from '../../../../utils/supabase/client'
-import EventsCards from './Events'
+import Events from './Events'
 
 export default function CurrentHouseholdAndCycle ({ households }) {
 
@@ -14,47 +14,78 @@ export default function CurrentHouseholdAndCycle ({ households }) {
     const [householdData, setHouseholdData] = useState(null)
     const [currentYear, setCurrentYear] = useState(null)
 
-    useEffect(() => {
+    const fetchCycle = async () => {
         if(!selectedHousehold) return
 
-        setHouseholdData(households?.find(h => h.id === Number(selectedHousehold)))
+        const { data : household } = await supabase
+            .from('households')
+            .select('days_played')
+            .eq('id', selectedHousehold)
+            .single()
 
-        const fetchCycle = async () => {
-            const { data : household } = await supabase
-                .from('households')
-                .select('days_played')
-                .eq('id', selectedHousehold)
+        if(household) {
+            console.log(household)
+            const { data : cycle } = await supabase
+                .from('cycles')
+                .select('*')
+                .eq('id', household.days_played)
                 .single()
 
-            if(household) {
-                const { data : cycle } = await supabase
-                    .from('cycles')
+            setCurrentCycle(cycle)
+
+            if(cycle) {
+                const { data : year } = await supabase
+                    .from('years')
                     .select('*')
-                    .eq('id', household.days_played)
+                    .eq('id', cycle.year_id)
                     .single()
 
-                setCurrentCycle(cycle)
-
-                if(cycle) {
-                    const { data : year } = await supabase
-                        .from('years')
-                        .select('*')
-                        .eq('id', cycle.year_id)
-                        .single()
-    
-                    setCurrentYear(year)
-                }
+                setCurrentYear(year)
             }
         }
+    }
+    
+    useEffect(() => {
+        
+        setHouseholdData(households?.find(h => h.id === Number(selectedHousehold)))   
 
         fetchCycle()
         
     }, [selectedHousehold])
-    
-    // console.log(selectedHousehold)
-    // console.log(householdData)
 
     // function handleformsubmitted that adds sims to hosueholds and in database and updates the householdData (?)
+
+    const handleDayDone = async () => {
+
+        if(!householdData) return
+        
+        const { data: household, error: householdsError } = await supabase
+            .from('households')
+            .update({ days_played: householdData.days_played + 1 })
+            .eq('id', householdData.id)
+            .select()
+            .single()
+            
+        if(householdsError) {
+            console.error('Error updating household days played:', householdsError)
+            return
+        }
+        
+        setHouseholdData(household)
+
+        await fetchCycle()
+
+        // const { data: sims, error: simsError } = await supabase
+        //     .from('sims')
+        //     .update({ days_played: supabase.rpc('increment', { column: 'days_played', value: 1}) })
+        //     .eq('household_id', household.id)
+
+        // if(simsError) {
+        //     console.error('Error updating sims days played:', simsError)
+        //     return
+        // }
+        
+    }
 
     return (
         <div className='relative flex flex-col items-center'>
@@ -78,8 +109,13 @@ export default function CurrentHouseholdAndCycle ({ households }) {
                         <p>{currentCycle.cycle + ' ' + currentYear.year}</p>
                         <p>Sim Day {currentCycle.id}</p>
                     </div>
-                    <button className='absolute right-[1%] sm:right-[5%] w-fit border-[2px] rounded-[14px] px-[20px] py-[10px] bg-white'>Day Done</button>
-                    <EventsCards household={householdData} cycle={currentCycle}/>
+                    <button 
+                        onClick={handleDayDone}
+                        className='absolute right-[1%] sm:right-[5%] w-fit border-[2px] rounded-[14px] px-[20px] py-[10px] bg-white'
+                    >
+                        Day Done
+                    </button>
+                    <Events household={householdData} cycle={currentCycle}/>
                 </>
             )}
 
