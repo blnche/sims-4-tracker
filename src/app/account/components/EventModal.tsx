@@ -1,7 +1,7 @@
 'use client'
 
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 
 interface ModalProps {
     isOpen: boolean;
@@ -21,6 +21,10 @@ export default function EventModal({ isOpen, onClose, eventType } : ModalProps) 
     // if event is baby attempt found sim baby attempts number and update it and setBabyAttempt()
 
     const [babyAttempts, setBabyAttempts] = useState(0)
+    const [simOptions, setSimOptions] = useState([])
+    const [sim1Selected, setSim1Selected] = useState()
+    const [sim2Selected, setSim2Selected] = useState()
+    const [sim3Selected, setSim3Selected] = useState()
 
     const modalStrings = {
         intro: [
@@ -113,7 +117,7 @@ export default function EventModal({ isOpen, onClose, eventType } : ModalProps) 
     }, [isOpen])
 
 
-    const handleSave = (type : string, sim1 : string, sim2 : string, sim3 : string ) => {
+    const handleSave = () => {
         //find sim1, sim2, sim3 in database
         //marriage, engagement, baby attempts, pregnancies, birth : both sims are not by default from same household. we could have a search for sim2 selector wher you type name of sim and you have suggestions.
         //add in database new event with event type, cycle id, sim1 id, sim2 id, sim3 id
@@ -124,7 +128,7 @@ export default function EventModal({ isOpen, onClose, eventType } : ModalProps) 
             <div className="relative bg-white flex flex-col items-center bg-white relative w-[534px] px-[40px] pb-[20px] pt-[35px] border-[2px] rounded-[14px] space-y-[40px]">
                     <div className="bg-white absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-[3px] rounded-[16px] p-[6px]">
                         <div className="border-[1px] rounded-[14px] px-[20px] py-[10px] w-full">
-                            {/* changes depending on eventType */}
+                {/* changes depending on eventType */}
                             <h3 className="text-center">{eventType}</h3>
                         </div>
                     </div>
@@ -139,15 +143,15 @@ export default function EventModal({ isOpen, onClose, eventType } : ModalProps) 
                             height={24}
                         />
                     </button>
-                    {/* changes depending on evenType */}
-                <Image 
-                    src={`/images/events_icons/${eventType}.png`}
-                    alt=''
-                    width={96}
-                    height={96}
-                />
+                {/* changes depending on evenType */}
+                    <Image 
+                        src={`/images/events_icons/${eventType}.png`}
+                        alt=''
+                        width={96}
+                        height={96}
+                    />
                 {/* changes depending of event */}
-                <p className="text-center">{modalStrings.intro.find((intro) => intro.type === type)?.string1}</p>
+                    <p className="text-center">{modalStrings.intro.find((intro) => intro.type === type)?.string1}</p>
                 { (type === 'divorce' || type === 'birth' || type === 'pregnancy') && (
                     <p className="text-center">{modalStrings.intro.find((intro) => intro.type === type)?.string2}</p>
                 )
@@ -159,8 +163,44 @@ export default function EventModal({ isOpen, onClose, eventType } : ModalProps) 
                 {/* if birth : input name input lastname, sentence, select parent 1 select parent 2 */}
                 {/* if death or coronation only one select, one sentence */}
                 {/* else sim 1 select, 'and', sim 2 select */}
-                <div className="space-y-[20px]">
-                    <p>selectsim</p>
+                {type === 'birth' && (
+                    <div className="flex flex-col items-center space-y-[20px]">
+                        <input type="text" placeholder="First Name" onChange={(e) => console.log('Born Sim First Name: ', e)}/>
+                        <input type="text" placeholder="Last Name" onChange={(e) => console.log('Born Sim Last Name: ', e)}/>
+                    </div>
+                )}
+                <div className="flex flex-col items-center space-y-[20px]">
+                    {type == 'birth' && (
+                        <p>{modalStrings.intro.find((intro) => intro.type === type)?.connector}</p>
+                    )}
+                    {/* selector for main sim from houshold sims pool */}
+                    <select
+                        value={simOptions[0]}
+                        onChange={(e) => console.log(e)}
+                    >
+                        <option value="">Select Sim</option>
+                        {simOptions.map((sim) => (
+                            <option key={sim.id} value={sim.id}>{sim.name} {sim.lastname}</option>
+                        ))}
+                    </select>
+
+                    {type !== 'birth' && (
+                        <p>{modalStrings.intro.find((intro) => intro.type === type)?.connector}</p>
+                    )}
+
+                    {/* selector second sim from all sims pool */}
+                    {(type !== 'death' && type !== 'coronation') && (
+                        <select 
+                            value={simOptions[0]}
+                            onChange={(e) => console.log(e)}
+                        >
+                            <option value="">Select Sim</option>
+                            {simOptions.map((sim) => (
+                                <option key={sim.id} value={sim.id}>{sim.name} {sim.lastname}</option>
+                            ))}
+                        </select>
+                    )}
+
                     <p className="text-center">{modalStrings.intro.find((intro) => intro.type === type)?.string3}</p>
                 </div>
 
@@ -171,8 +211,9 @@ export default function EventModal({ isOpen, onClose, eventType } : ModalProps) 
                 {type === 'baby attempt' && (
                     <p className="text-center text-sm">{modalStrings.intro.find((intro) => intro.type === type)?.bonus(babyAttempts)}</p>
                 )}
-                {/* if baby attempt one more sentence before button */}
+
                 <button
+                    onClick={() => handleSave()}
                     className="w-fit border-[2px] rounded-[14px] px-[25px] py-[10px]"
                 >
                     Save
