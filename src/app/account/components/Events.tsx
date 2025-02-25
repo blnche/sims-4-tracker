@@ -22,6 +22,7 @@ export default function Events ({ household, cycle } : EventCardProps) {
     console.log(cycle)
 
     const supabase = createClient()
+    
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [eventType, setEventType] = useState(null)
     const [events, setEvents] = useState<EventItem[]>([])

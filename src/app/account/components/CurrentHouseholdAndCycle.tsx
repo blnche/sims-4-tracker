@@ -78,7 +78,7 @@ export default function CurrentHouseholdAndCycle ({ households }) {
                         <p>{currentCycle.cycle + ' ' + currentYear.year}</p>
                         <p>Sim Day {currentCycle.id}</p>
                     </div>
-                    <button className='absolute right-[1%] sm:right-[5%] top-1/2 w-fit border-[2px] rounded-[14px] px-[20px] py-[10px] bg-white'>Day Done</button>
+                    <button className='absolute right-[1%] sm:right-[5%] w-fit border-[2px] rounded-[14px] px-[20px] py-[10px] bg-white'>Day Done</button>
                     <EventsCards household={householdData} cycle={currentCycle}/>
                 </>
             )}
